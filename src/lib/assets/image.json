@@ -1,0 +1,10 @@
+{
+    "images":[
+        {
+            "name":"image1",
+            "path":"./images/test-image.jpg",
+            "position-x":  0.4355555216471354,
+            "position-y":  0.8228022643958655
+        }
+    ]
+}
