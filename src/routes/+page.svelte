@@ -8,8 +8,6 @@
     let mousex , mousey;
     let mapRect;
     let map;
-    let xfixed;
-    let yfixed;
     let clickx, clicky;
     let dist;
     let positionx;
@@ -40,9 +38,7 @@
     function mouseMove(event) {
         mapRect = map.getBoundingClientRect();
         mousex = (event.clientX - mapRect.left) / mapRect.width;
-        xfixed = mousex.toFixed(2);
         mousey = (event.clientY - mapRect.top) / mapRect.height;
-        yfixed = mousey.toFixed(2);
         if (mousex < 0 || mousey < 0) {
             mousex = 0;
             mousey = 0;
