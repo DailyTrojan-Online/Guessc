@@ -2,12 +2,14 @@
     import data from "$lib/assets/image.json";
     let showModal = false;
     import { onMount } from "svelte";
+    import { tick } from "svelte";
+    let guessmade = false;
     let randint = Math.floor(Math.random() * data.images.length);
     let canvas, ctx;
     let canvas2 , ctx2;
     let mousex , mousey;
-    let mapRect;
-    let map;
+    let mapRect, mapRect2;
+    let map, map2;
     let clickx, clicky;
     let dist;
     let positionx;
@@ -23,11 +25,6 @@
         if(canvas && map){
             console.log("Canvas", canvas);
             ctx = canvas.getContext("2d");
-            resizeCanvas();
-        }
-        if(canvas2){
-            console.log("Canvas2", canvas2);
-            ctx2 = canvas2.getContext("2d");
             resizeCanvas();
         }
         window.addEventListener("resize", resizeCanvas);
@@ -47,7 +44,7 @@
     function mouseclick(event) {
         clickx = mousex;
         clicky = mousey;
-        
+        console.log("Click postion x,y : ",clickx, clicky);
         dist = Math.sqrt((clickx-positionx) ** 2 + (clicky-positiony) ** 2);
         dist = dist.toFixed(2);
         dist = 5000-dist * 5000;
@@ -59,39 +56,77 @@
             canvas.height = mapRect.height;
             // Redraw markers or elements on the canvas after resizing
         }
-        if(canvas2 && mapRect){
-            console.log("Resizing canvas2");
-            canvas2.width = mapRect.width;
-            canvas2.height = mapRect.height;
-        }
-
     } 
+    function drawLineBetweenPoints(x1, y1, x2, y2) {
+        if (ctx2 && canvas2) {
+            ctx2.beginPath();
+            ctx2.moveTo(x1 * canvas2.width, y1 * canvas2.height); // Start point of the line
+            ctx2.lineTo(x2 * canvas2.width, y2 * canvas2.height); // End point of the line
+            ctx2.setLineDash([5, 5]);
+            ctx2.strokeStyle = "blue"; // Line color
+            ctx2.lineWidth = 2; // Line thickness
+            ctx2.stroke(); // Draw the line
+            ctx2.setLineDash([]); // Reset the line dash pattern
+        }
+    }
+    function drawFinishMarker(x, y) {
+        if (ctx2 && canvas2) {
+        const img = new Image(); // Create a new image element
+        img.src = "./guesSC.png"; // Set the path to the PNG
+
+        img.onload = function () {
+            // Once the image is loaded, draw it on the canvas
+            ctx2.drawImage(img, x * canvas2.width-15, y * canvas2.height-15, 30, 30);
+        };
+    }
+    }
+    function resizeCanvas2() {
+        
+        if (canvas2 && map2 && mapRect2) {
+            canvas2.width = mapRect2.width;
+            canvas2.height = mapRect2.height;
+            drawLineBetweenPoints(clickx, clicky, positionx, positiony);
+            drawMarker2(clickx, clicky);
+            drawFinishMarker(positionx, positiony);
+            // Redraw markers or elements on the canvas after resizing
+        }
+    }
     function drawMarker(x, y) {
         
         if (ctx && canvas) {
             ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear previous drawings
-
             // Draw a marker at the specified position (scaled to canvas dimensions)
             const markerX = x * canvas.width;
             const markerY = y * canvas.height;
             ctx.beginPath();
-            ctx.arc(markerX, markerY, 5, 0, 2 * Math.PI); // Draw a circle marker
+            ctx.arc(markerX, markerY, 3, 0, 2 * Math.PI); // Draw a circle marker
             ctx.fillStyle = "red"; // Marker color
             ctx.fill();
         }
-        if(ctx2 && canvas2){
-            console.log("Drawing modal marker at", x, y);
-            ctx2.clearRect(0, 0, canvas2.width, canvas2.height);
-            const markerX2 = x * canvas2.width;
-            const markerY2 = y * canvas2.height;
+    }
+    function drawMarker2(x, y) {
+        if (ctx2 && canvas2) {// Clear previous drawings
+            // Draw a marker at the specified position (scaled to canvas dimensions)
+            const markerX = x * canvas2.width;
+            const markerY = y * canvas2.height;
             ctx2.beginPath();
-            ctx2.arc(markerX2, markerY2, 5, 0, 2 * Math.PI); // Draw a circle marker
+            ctx2.arc(markerX, markerY, 5, 0, 2 * Math.PI); // Draw a circle marker
             ctx2.fillStyle = "red"; // Marker color
             ctx2.fill();
         }
     }
+    function setupCanvas2(){
+        mapRect2 = map2.getBoundingClientRect();
+        if(canvas2 && map2){
+            console.log("Canvas2", canvas2);
+            ctx2 = canvas2.getContext("2d");
+            resizeCanvas2();
+        }
+    }
     function buttonclick(event){
+        guessmade = true;
         showModal = true;
+        tick().then(setupCanvas2);
     }
 </script>
 <svelte:window on:pointermove={mouseMove}></svelte:window>
@@ -106,20 +141,24 @@
     </div>
     <div class="map-wrapper">
         <div class="map">
-            <div bind:this={map} on:click={mouseclick} class="image-wrapper">
+            <div bind:this={map} on:click={guessmade ? null: mouseclick} class="image-wrapper">
                 <img src="./Map.png" alt="Map" />
                 <canvas bind:this={canvas} class="map-canvas"></canvas>
             </div>
-            <button on:click={buttonclick}>Submit</button>
+            <button on:click={guessmade ? null:buttonclick} disabled={guessmade}>Submit</button>
         </div>
     </div>
 </div>
 {#if showModal}
     <div class="modal">
         <div class="modal-content">
-            <div class = "modal-map-wrapper">
+            <div bind:this={map2} class = "modal-map-wrapper">
                 <img src="./Map.png" alt="Map" />
                 <canvas bind:this={canvas2} class="modal-canvas"></canvas>
+            </div>
+            <div class="my-4">
+                <div class="mb-1 text-lg font-medium dark:text-white">Extra Large</div>
+                <Progressbar progress="50" size="h-6" />
             </div>
             <p>Distance: {dist}</p>
             <button on:click={() => showModal = false}>Close</button>
@@ -127,9 +166,20 @@
     </div>
 {/if}
 <style>
-    .modal-content img{
-        width: 100%;
-
+    .modal-content{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .modal-map-wrapper{
+        position: relative;
+        border: 1px solid black;
+    }
+    .modal-map-wrapper img{
+        width:100%;
+        height:100%;
+        position: relative;
     }
     .modal{
         position: fixed;
@@ -141,6 +191,7 @@
         background-color: grey;
     }
     .game-wrapper {
+        background-color: black;
         width: 100%;
         height: 100%;
         display: flex;
@@ -193,6 +244,7 @@
         transform: scale(1.5);
     }
     .image-wrapper canvas {
+        cursor: crosshair;
         position: absolute;
         top: 0;
         left: 0;
