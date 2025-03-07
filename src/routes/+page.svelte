@@ -148,7 +148,7 @@
         <img src={Imagepath} alt="Guess-Image" />
     </div>
     {#if !guessmade}
-    <div class="map-wrapper" transition:fly={{duration: 500, x: 100}}>
+    <div class="map-wrapper" transition:fly={{duration: 1000, x: 100}}>
         <div class="map">
             <div bind:this={map} on:click={guessmade ? null: mouseclick}  class="image-wrapper" style:pointer-events={guessmade ? "none" : "auto"}>
                 <img src="./Map.png" alt="Map" />
@@ -281,7 +281,7 @@
         background-color: #ff9595;
         border: none;
         cursor: pointer;
-        opacity: 0.7;
+        opacity: 0.5;
         border-radius: 12px;
         width: 100%;
     }
@@ -289,11 +289,6 @@
         background-color: #990000;
         color: gold;
         opacity: 1;
-    }
-    .button-guess:disabled {
-        background-color: transparent;
-        width: 0%;
-        height: 0%;
     }
     .progress-bar-wrapper {
         
