@@ -3,7 +3,7 @@
     let showModal = false;
     import { onMount } from "svelte";
     import { tick } from "svelte";
-    import { blur } from "svelte/transition";
+    import { blur, fly, slide } from "svelte/transition";
     let guessmade = false;
     let guessed = false;
     let randint = Math.floor(Math.random() * data.images.length);
@@ -136,13 +136,9 @@
     }
     const randomTime = () => Math.floor(Math.random() * 60);
     const changeprogress = () => progress = dist/5000 * 100;
-    const addColor = () => barWidth += 1;
-    const make_progress = () => {
-        progress = setInterval(addColor, randomTime());
-    }
 </script>
 <svelte:window on:pointermove={mouseMove}></svelte:window>
-<div class="game-wrapper" style:filter={guessmade ? "blur(10px)" : "none"}>
+<div class="game-wrapper" style:filter={guessmade && showModal ? "blur(10px)" : "none"}>
     <!-- <h1>Coordinates</h1>
     <p>X: {xfixed} y: {yfixed}</p>
     <p>X: {mousex} y: {mousey}</p>
@@ -151,15 +147,20 @@
     <div class="image" >
         <img src={Imagepath} alt="Guess-Image" />
     </div>
-    <div class="map-wrapper">
-        <div class="map" style:opacity={guessmade ? 0 : 1}>
+    {#if !guessmade}
+    <div class="map-wrapper" transition:fly={{duration: 500, x: 100}}>
+        <div class="map">
             <div bind:this={map} on:click={guessmade ? null: mouseclick}  class="image-wrapper" style:pointer-events={guessmade ? "none" : "auto"}>
                 <img src="./Map.png" alt="Map" />
                 <canvas bind:this={canvas} class="map-canvas"></canvas>
             </div>
-            <button on:click={guessmade ? null:buttonclick} disabled={guessmade||!guessed} class="button-guess">Submit</button>
+            <div >
+            {#if !guessmade && guessed}
+            <button  transition:fly={{duration: 300, y: 100}} on:click={guessmade ? null:buttonclick} class="button-guess">Submit</button>
+            {/if}</div>
         </div>
     </div>
+    {/if}
 </div>
 {#if showModal}
     <div class="modal">
@@ -168,7 +169,7 @@
                 <img src="./Map.png" alt="Map" />
                 <canvas bind:this={canvas2} class="modal-canvas"></canvas>
             </div>
-            <p>Distance: {dist}</p>
+            <p>Distance: {dist.toFixed(0)} </p>
             <div class="progress-bar-wrapper">
                 <div class="progress-bar" style:width={`${progress}%`} style:background-color="${progress_color}">
                     <br>
@@ -227,6 +228,7 @@
         width: 100%;
         height: 100%;
         position: absolute;
+        object-fit: contain;
     }
     .map-wrapper {
         position: relative;
@@ -238,11 +240,11 @@
         position: fixed;
         bottom: 0;
         right: 0;
-        
+        padding: 20px 18px;
     }
     .image-wrapper img {
         border-radius: 12px;
-        width: 300px;
+        width: 100%;
     }
     .image-wrapper {
         overflow: hidden;
@@ -250,11 +252,12 @@
         transform-origin: bottom right;
         position: relative;
         opacity: .5;
+        width:300px;
     }
     .image-wrapper:hover {
         cursor: crosshair;
-        transform: scale(1.5);
         opacity: 1;
+        width:400px;
     }
     
     .image-wrapper canvas {
