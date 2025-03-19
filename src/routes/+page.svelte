@@ -139,28 +139,33 @@
 </script>
 <svelte:window on:pointermove={mouseMove}></svelte:window>
 <div class="game-wrapper" style:filter={guessmade && showModal ? "blur(10px)" : "none"}>
+    
     <!-- <h1>Coordinates</h1>
     <p>X: {xfixed} y: {yfixed}</p>
     <p>X: {mousex} y: {mousey}</p>
     <p>clickX: {clickx} clickY: {clicky}</p> -->
-
+    <div class = "placeholder">
+        <br>
+    </div> 
     <div class="image" >
         <img src={Imagepath} alt="Guess-Image" />
     </div>
+    
     {#if !guessmade}
-    <div class="map-wrapper" transition:fly={{duration: 1000, x: 100}}>
-        <div class="map">
-            <div bind:this={map} on:click={guessmade ? null: mouseclick}  class="image-wrapper" style:pointer-events={guessmade ? "none" : "auto"}>
-                <img src="./Map.png" alt="Map" />
-                <canvas bind:this={canvas} class="map-canvas"></canvas>
+        <div class="map-wrapper" transition:fly={{duration: 1000, x: 100}}>
+            <div class="map">
+                <div bind:this={map} on:click={guessmade ? null: mouseclick}  class="image-wrapper" style:pointer-events={guessmade ? "none" : "auto"}>
+                    <img src="./Map.png" alt="Map" />
+                    <canvas bind:this={canvas} class="map-canvas"></canvas>
+                </div>
+                <div >
+                {#if !guessmade && guessed}
+                <button  transition:fly={{duration: 300, y: 100}} on:click={guessmade ? null:buttonclick} class="button-guess">Submit</button>
+                {/if}</div>
             </div>
-            <div >
-            {#if !guessmade && guessed}
-            <button  transition:fly={{duration: 300, y: 100}} on:click={guessmade ? null:buttonclick} class="button-guess">Submit</button>
-            {/if}</div>
         </div>
-    </div>
     {/if}
+    
 </div>
 {#if showModal}
     <div class="modal">
@@ -183,7 +188,20 @@
 {/if}
 
 <style>
-    
+    .placeholder{
+        z-index: 999;
+        background-color: red;
+        height: 50px;
+        opacity: 0.5;
+    }
+    @keyframes progressColor {
+        0% {
+            background-color: #ff9595;
+        }
+        100% {
+            background-color: #990000;
+        }
+    }
     .modal-content{
         display: flex;
         flex-direction: column;
@@ -287,17 +305,17 @@
     }
     .button-guess:hover {
         background-color: #990000;
-        color: gold;
+        color: white;
         opacity: 1;
     }
     .progress-bar-wrapper {
-        
         color: white;
         width: 100%;
         height: 100%;
         position: relative;
     }
     .progress-bar{
+        animation: progressColor 1.5s forwards;
         transition: 1s;
         border-radius: 12px;
         height: 100%;
@@ -314,7 +332,7 @@
     }
     .modal-button:hover {
         background-color: #990000;
-        color: gold;
+        color: white;
         opacity: 1;
     }
 </style>
