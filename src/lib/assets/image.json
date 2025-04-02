@@ -13,5 +13,76 @@
             "position-x":  0.7377777777777778,
             "position-y":  0.6025640466711023
         }
+        ,
+        {
+            "name":"image3",
+            "path":"./images/09_30_ViterbiStock-4.jpg",
+            "position-x":  0.17833343505859375,
+            "position-y":  0.818963534847493
+        }
+        ,
+        {
+            "name":"image4",
+            "path":"./images/2024_10_02_AnnenbergStock (Kaiyu Wu)-1.jpg",
+            "position-x":  0.425,
+            "position-y":  0.5417192311305887
+        }
+        ,
+        {
+            "name":"image5",
+            "path":"./images/Fin Liu_SCA-5.jpg",
+            "position-x":  0.5000000762939453,
+            "position-y":  0.3410273501903307
+        }
+        ,
+        {
+            "name":"image6",
+            "path":"./images/GouldStock-JakeBerg-5151.jpg",
+            "position-x":  0.6116666412353515,
+            "position-y":  0.8789643076871787
+        }
+        ,
+        {
+            "name":"image7",
+            "path":"./images/JonathanPark-SDASTOCK-5.jpg",
+            "position-x":  0.6250000762939453,
+            "position-y":  0.9203440007940549
+        }
+        ,
+        {
+            "name":"image8",
+            "path":"./images/JonathanPark-THORNTONSTOCK-2.jpg",
+            "position-x":  0.6266666412353515,
+            "position-y":  0.4072350864671225
+        }
+        ,
+        {
+            "name":"image9",
+            "path":"./images/SolPriceStock-JakeBerg-5135.jpg",
+            "position-x":  0.7183333587646484,
+            "position-y":  0.843791388595917
+        }
+        ,
+        {
+            "name":"image10",
+            "path":"./images/USCDornsifeBuilding2(Mallory Snyder).jpg",
+            "position-x":  0.44500007629394533,
+            "position-y":  0.938964891105373
+        }
+        ,
+        {
+            "name":"image11",
+            "path":"./images/USCDornsifeBuilding3(Mallory Snyder).jpg",
+            "position-x":  0.6683333587646484,
+            "position-y":  0.6513756167563767
+        }
+        ,
+        {
+            "name":"image12",
+            "path":"./images/USCRoskiBuilding3(Mallory Snyder).jpg",
+            "position-x":  0.39666664123535156,
+            "position-y":  0.8334466073853166
+        }
+
     ]
 }

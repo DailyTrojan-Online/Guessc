@@ -4,9 +4,12 @@
     import { onMount } from "svelte";
     import { tick } from "svelte";
     import { blur, fly, slide } from "svelte/transition";
+    import {tweened} from "svelte/motion";
     let guessmade = false;
     let guessed = false;
+    let failed = false;
     let randint = Math.floor(Math.random() * data.images.length);
+    // let randint = 10;
     let canvas, ctx;
     let canvas2 , ctx2;
     let mousex , mousey;
@@ -134,6 +137,8 @@
         tick().then(setupCanvas2);
         tick().then(changeprogress);
     }
+    let TimeValue = tweened(0, { duration: 120000});
+    TimeValue.set(120);
     const randomTime = () => Math.floor(Math.random() * 60);
     const changeprogress = () => progress = dist/5000 * 100;
 </script>
@@ -144,13 +149,23 @@
     <p>X: {xfixed} y: {yfixed}</p>
     <p>X: {mousex} y: {mousey}</p>
     <p>clickX: {clickx} clickY: {clicky}</p> -->
-    <div class = "placeholder">
-        <br>
-    </div> 
+   
     <div class="image" >
         <img src={Imagepath} alt="Guess-Image" />
     </div>
-    
+    <div class = "placeholder">
+        <br>
+    </div> 
+    <div class="timer-wrapper">
+        <div class="timer">
+            <div class="time">
+                <p>
+                    {String(Math.floor((120 - $TimeValue) / 60)).padStart(1, '0')}:{String(Math.floor((120 - $TimeValue) % 60)).padStart(2, '0')}
+                     <!-- {$TimeValue} -->
+                 </p>
+            </div>
+        </div>
+    </div>
     {#if !guessmade}
         <div class="map-wrapper" transition:fly={{duration: 1000, x: 100}}>
             <div class="map">
@@ -167,6 +182,14 @@
     {/if}
     
 </div>
+{#if $TimeValue == 120 && !guessmade }
+    <div class="modal">
+        <div class="modal-content">
+            <p>Time's up!</p>
+            <button on:click={() => guessmade = true} class ="modal-button">Close</button>
+        </div>
+    </div>
+{/if}
 {#if showModal}
     <div class="modal">
         <div class="modal-content">
@@ -188,11 +211,33 @@
 {/if}
 
 <style>
-    .placeholder{
-        z-index: 999;
-        background-color: red;
-        height: 50px;
-        opacity: 0.5;
+    .timer-wrapper{
+        position: absolute;
+        top: 30px;
+        left: 0;
+        width: 100%;
+    }
+    .timer{
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        background-color: #990000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .time{
+        position: absolute;
+        font-size: x-large;
+        height: 30px;
+        width :75px;
+        border: 5px solid #990000;
+        background-color: white;
+        border-radius: 25px;
+        color: black;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
     @keyframes progressColor {
         0% {
